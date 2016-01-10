@@ -1,11 +1,5 @@
----
-title: "Untitled"
-author: "Chiang"
-output: 
-  html_document: 
-    fig_caption: yes
-    keep_md: yes
----
+# Untitled
+Chiang  
 
 ##About
 This was the first project for the **Reproducible Research** course in Coursera's Data Science specialization track. 
@@ -29,7 +23,8 @@ The variables included in this dataset are:
 The dataset is stored in a comma-separated-value (CSV) file and there are a total of 17,568 observations in this dataset.
 
 ##Loading and preprocessing the data
-```{r}
+
+```r
 setwd("~/Desktop/R")
 activity <- read.csv("activity.csv")
 activity$date <- as.Date(as.character(activity$date))
@@ -38,7 +33,8 @@ activity$date <- as.Date(as.character(activity$date))
 ##What is mean total number of steps taken per day?
 * histogram shows the distribution of steps taken per day.
 * In this case(ignoring missing values), the most frquent interval for steps taken per day ranges from 10,000 to 15,000 steps, which contains 25 days in total. 
-```{r}
+
+```r
 activityperday <- aggregate(steps~date,data = activity,sum)
 hist(activityperday$steps,
      main = "Total number of steps taken each day",
@@ -46,16 +42,22 @@ hist(activityperday$steps,
      ylab = "Total number of days",
      col = "pink"
      )
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)\
+
+```r
 rmean <- mean(activityperday$steps)
 rmedian <- median(activityperday$steps)
 ```
-The `mean` is `r rmean` and the `median` is `r rmedian`.
+The `mean` is 1.0766189\times 10^{4} and the `median` is 10765.
 
 ##What is the average daily activity pattern?
 * Calculate average steps for each interval for all days. 
 * Plot the Average Steps per Day by Interval. 
 * Find interval with most average steps. 
-```{r}
+
+```r
 dailyavg <- aggregate(steps~interval, data = activity, mean)
 plot(x = dailyavg$interval,
      y = dailyavg$steps,
@@ -66,19 +68,33 @@ plot(x = dailyavg$interval,
      col = "blue"
      )
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)\
 extract the interval in which averagely the most steps are taken.
-```{r}
+
+```r
 dailyavg[which.max(dailyavg$steps),]
 ```
+
+```
+##     interval    steps
+## 104      835 206.1698
+```
 count NA's (total of 2304)
-```{r}
+
+```r
 length(
   grep("TRUE",is.na(activity$steps))
   )
 ```
+
+```
+## [1] 2304
+```
 ##Imputing missing values
 * missing values are substituted with the mean of steps at the interval the missing value belongs to.
-```{r}
+
+```r
 activityadded <- activity
 
 activityadded <- transform(
@@ -90,7 +106,8 @@ activityadded <- transform(
 activityperdayadded <- aggregate(steps~date,data = activityadded,sum)
 ```
 Create Histogram.
-```{r}
+
+```r
 hist(
   activityperdayadded$steps,
   main = "Total number of steps taken each day",
@@ -106,20 +123,24 @@ hist(activityperday$steps,
      add = T
 )
 legend("topright", c("Imputed", "Non-imputed"), col=c("red", "skyblue"), lwd=4)
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)\
 Calculate new mean and median for imputed data.
-```{r}
+
+```r
 rmeanadded <- mean(activityperdayadded$steps)
 rmedianadded <- median(activityperdayadded$steps)
 ```
 Calculate difference between imputed and non-imputed data.
-```{r}
+
+```r
 meandiff <- rmeanadded - rmean
 meddiff <- rmedianadded - rmedian
 ```
 Calculate total difference.
-```{r}
+
+```r
 totaldiff <- sum(activityperdayadded$steps) - sum(activityperdayadded$steps)
 ```
 
@@ -132,7 +153,8 @@ totaldiff <- sum(activityperdayadded$steps) - sum(activityperdayadded$steps)
 
 ##Are there differences in activity patterns between weekdays and weekends?
 Created a plot to compare difference between the week and weekend. 
-```{r}
+
+```r
 weekdays <- c("Monday", "Tuesday", "Wednesday", "Thursday", 
               "Friday")
 activityadded$weekday = as.factor(
@@ -156,7 +178,8 @@ xyplot(
   layout=c(1,2), 
   type="l"
   )
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)\
 
 
